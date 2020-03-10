@@ -37,7 +37,7 @@
   "description": "Type checking and DDD for JavaScript",
   "devDependencies": {
     "benchmark": "2.1.0",
-    "eslint": "1.10.3",
+    "eslint": "6.8.0",
     "mocha": "2.3.4",
     "webpack": "1.12.14"
   },
