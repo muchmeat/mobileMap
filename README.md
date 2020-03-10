@@ -3,7 +3,7 @@
 1.Clone the project
 
 ```
-git clone --recursive http://192.168.0.125/rn-app/rn-arcgis-map.git
+git clone --recursive https://github.com/muchmeat/mobileMap.git
 ```
 
 
