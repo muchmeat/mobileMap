@@ -1,0 +1,69 @@
+buildscript {
+    ext {
+        buildToolsVersion = "28.0.2"
+        minSdkVersion = 19 //increase to 19 for Arcgis
+        compileSdkVersion = 28
+        targetSdkVersion = 27
+        supportLibVersion = "27.1.1"
+    }
+    repositories {
+        jcenter()
+        google()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.0'
+    }
+}
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            url "$rootDir/../node_modules/react-native/android"
+        }
+        maven {
+            url "https://maven.google.com"
+        }
+        maven { url "https://jitpack.io" }
+        maven {
+            url 'https://esri.bintray.com/arcgis'
+        }
+        google()
+    }
+}
+
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { dependency ->
+            //指定com.android.support相关库版本使用根项目配置
+            if (dependency.requested.group.equals('com.android.support')
+                    && !dependency.requested.name.contains('multidex')) {
+                dependency.useVersion rootProject.ext.supportLibVersion
+            }
+            //制定react-native版本，避免代码仓库问题导致使用旧版本
+            if (dependency.requested.group.equals('com.facebook.react')
+                    && dependency.requested.name.equals('react-native')) {
+                dependency.useVersion "0.57.8"
+            }
+        }
+    }
+}
+
+subprojects { subproject ->
+    afterEvaluate{
+        if((subproject.plugins.hasPlugin('android') || subproject.plugins.hasPlugin('android-library'))) {
+            android {
+                //强制使用根项目制定的Android版本
+                compileSdkVersion rootProject.ext.compileSdkVersion
+                buildToolsVersion rootProject.ext.buildToolsVersion
+            }
+        }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.7'
+    distributionUrl = distributionUrl.replace("bin", "all")
+}
